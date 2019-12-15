@@ -1,8 +1,7 @@
-package main
+package hashring
 
 import (
 	"hash/adler32"
-	"log"
 	"sort"
 )
 
@@ -80,20 +79,4 @@ func (ring *HashRing) AddValue(value string) string {
 	}
 
 	return ring.NodeList[0].ID
-}
-
-func main() {
-	ring := InitializeRing()
-
-	node1 := InitializeNode("0")
-	node2 := InitializeNode("10")
-	node3 := InitializeNode("30")
-
-	ring.InsertNode(node1)
-	ring.InsertNode(node2)
-	ring.InsertNode(node3)
-
-	log.Println("Adding to Node:", ring.AddValue("1"))
-	log.Println("Adding to Node:", ring.AddValue("20"))
-	log.Println("Adding to Node:", ring.AddValue("100"))
 }
