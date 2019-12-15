@@ -31,6 +31,12 @@ func InitializeRing() HashRing {
 func InitializeNode(ID string) Node {
 	var newNode Node
 
+	if ID == "" {
+		newNode.ID = "-1"
+		newNode.Hash = HashValue("-1")
+		return newNode
+	}
+
 	newNode.ID = ID
 	newNode.Hash = HashValue(ID)
 
@@ -41,7 +47,7 @@ func (ring *HashRing) Sort() {
 	sort.Sort(ring.NodeList)
 }
 
-func (ring *HashRing) indexOfNode(nodeToBeIndexed Node) int {
+func (ring *HashRing) IndexOfNode(nodeToBeIndexed Node) int {
 	nodeIndex := -1
 
 	for index, node := range ring.NodeList {
@@ -55,12 +61,14 @@ func (ring *HashRing) indexOfNode(nodeToBeIndexed Node) int {
 }
 
 func (ring *HashRing) InsertNode(node Node) {
-	ring.NodeList = append(ring.NodeList, node)
-	ring.Sort()
+	if node.ID != "-1" {
+		ring.NodeList = append(ring.NodeList, node)
+		ring.Sort()
+	}
 }
 
 func (ring *HashRing) RemoveNode(node Node) {
-	nodeIndex := ring.indexOfNode(node)
+	nodeIndex := ring.IndexOfNode(node)
 
 	if nodeIndex != -1 {
 		ring.NodeList = append(ring.NodeList[:nodeIndex], ring.NodeList[nodeIndex+1:]...)
@@ -68,15 +76,15 @@ func (ring *HashRing) RemoveNode(node Node) {
 	}
 }
 
-// Only tells which node to add to
-func (ring *HashRing) AddValue(value string) string {
+// AddValue Only tells which node to add to
+func (ring *HashRing) AddValue(value string) Node {
 	entryHash := HashValue(value)
 
 	for index := 1; index < len(ring.NodeList); index++ {
 		if ring.NodeList[index-1].Hash <= entryHash && entryHash < ring.NodeList[index].Hash {
-			return ring.NodeList[index].ID
+			return ring.NodeList[index]
 		}
 	}
 
-	return ring.NodeList[0].ID
+	return ring.NodeList[0]
 }
